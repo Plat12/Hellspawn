@@ -1,0 +1,6 @@
+{
+  "hellspawn.dimension.description.minecraft.overworld": "A familiar, lush habitable world",
+  "hellspawn.dimension.description.minecraft.the_nether": "A scorched hellscape; survival is not guaranteed",
+  "hellspawn.dimension.description.minecraft.the_end": "An eldritch and empty realm; escape is nigh-impossible",
+  "hellspawn.gui.spawn_dimension": "Dimension"
+}
