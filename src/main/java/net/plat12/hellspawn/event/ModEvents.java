@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.plat12.hellspawn.util.ModUtils;
 import net.plat12.hellspawn.util.savedata.SpawnDimensionSaveData;
@@ -29,10 +28,5 @@ public class ModEvents {
         }
     }
 
-
-    @SubscribeEvent
-    public static void redirectRespawns(PlayerEvent.PlayerRespawnEvent event) {
-
-    }
 
 }

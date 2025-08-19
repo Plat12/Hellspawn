@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.plat12.hellspawn.Hellspawn;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -20,10 +21,9 @@ public class SpawnDimensionSaveData extends SavedData {
             SpawnDimensionSaveData::create,
             SpawnDimensionSaveData::load,
             null);
-
+    private final Set<UUID> joinedPlayers = new HashSet<>();
     private ResourceKey<Level> spawnDimension;
     private BlockPos dimensionSpawnPos;
-    private final Set<UUID> joinedPlayers = new HashSet<>();
 
     public static SpawnDimensionSaveData getOrCreate(ServerLevel world) {
         return world.getServer().getLevel(Level.OVERWORLD).getDataStorage().computeIfAbsent(FACTORY, DATA_KEY);
@@ -32,7 +32,6 @@ public class SpawnDimensionSaveData extends SavedData {
     public static SpawnDimensionSaveData load(CompoundTag nbt, HolderLookup.Provider registries) {
         SpawnDimensionSaveData saveData = create();
 
-        // Load spawn dimension if present
         if (nbt.contains("spawnDimension", Tag.TAG_STRING)) {
             ResourceLocation dimensionId = ResourceLocation.tryParse(nbt.getString("spawnDimension"));
             if (dimensionId != null) {
@@ -40,7 +39,6 @@ public class SpawnDimensionSaveData extends SavedData {
             }
         }
 
-        // Load dimension spawn position if present
         if (nbt.contains("dimensionSpawnPos", Tag.TAG_COMPOUND)) {
             CompoundTag posTag = nbt.getCompound("dimensionSpawnPos");
             saveData.dimensionSpawnPos = new BlockPos(
@@ -50,7 +48,6 @@ public class SpawnDimensionSaveData extends SavedData {
             );
         }
 
-        // Load joined players
         ListTag playersTag = nbt.getList("joinedPlayers", Tag.TAG_INT_ARRAY);
         for (int i = 0; i < playersTag.size(); i++) {
             int[] uuidArray = playersTag.getIntArray(i);
@@ -68,13 +65,12 @@ public class SpawnDimensionSaveData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        // Save spawn dimension
+    public @NotNull CompoundTag save(@NotNull CompoundTag compoundTag, HolderLookup.Provider provider) {
+
         if (spawnDimension != null) {
             compoundTag.putString("spawnDimension", spawnDimension.location().toString());
         }
 
-        // Save dimension spawn position
         if (dimensionSpawnPos != null) {
             CompoundTag posTag = new CompoundTag();
             posTag.putInt("x", dimensionSpawnPos.getX());
@@ -83,7 +79,6 @@ public class SpawnDimensionSaveData extends SavedData {
             compoundTag.put("dimensionSpawnPos", posTag);
         }
 
-        // Save joined players
         ListTag playersTag = new ListTag();
         for (UUID playerUUID : joinedPlayers) {
             playersTag.add(NbtUtils.createUUID(playerUUID));
@@ -93,11 +88,7 @@ public class SpawnDimensionSaveData extends SavedData {
         return compoundTag;
     }
 
-    /**
-     * Sets the spawn dimension. Can only be set once - subsequent calls will be ignored.
-     * @param dimension the dimension to set as spawn
-     * @return true if the dimension was set, false if it was already set
-     */
+
     public boolean setSpawnDimension(ResourceKey<Level> dimension) {
         if (spawnDimension == null && dimension != null) {
             spawnDimension = dimension;
@@ -107,11 +98,7 @@ public class SpawnDimensionSaveData extends SavedData {
         return false;
     }
 
-    /**
-     * Sets the dimension spawn position. Can only be set once - subsequent calls will be ignored.
-     * @param pos the position to set as spawn
-     * @return true if the position was set, false if it was already set
-     */
+
     public boolean setDimensionSpawnPos(BlockPos pos) {
         if (dimensionSpawnPos == null && pos != null) {
             dimensionSpawnPos = pos.immutable();
@@ -121,11 +108,7 @@ public class SpawnDimensionSaveData extends SavedData {
         return false;
     }
 
-    /**
-     * Adds a player to the joined players list. Players can only be added, not removed.
-     * @param playerUUID the UUID of the player to add
-     * @return true if the player was added, false if they were already in the list
-     */
+
     public boolean addJoinedPlayer(UUID playerUUID) {
         if (playerUUID != null && !joinedPlayers.contains(playerUUID)) {
             joinedPlayers.add(playerUUID);
@@ -139,30 +122,22 @@ public class SpawnDimensionSaveData extends SavedData {
         return this.addJoinedPlayer(joinedPlayer.getUUID());
     }
 
-    /**
-     * Gets the spawn dimension. May be null if not set.
-     */
+
     public ResourceKey<Level> getSpawnDimension() {
         return spawnDimension;
     }
 
-    /**
-     * Gets the dimension spawn position. May be null if not set.
-     */
+
     public BlockPos getDimensionSpawnPos() {
         return dimensionSpawnPos;
     }
 
-    /**
-     * Gets a copy of the joined players list to prevent external modification.
-     */
+
     public List<UUID> getJoinedPlayers() {
         return new ArrayList<>(joinedPlayers);
     }
 
-    /**
-     * Checks if a player has joined before.
-     */
+
     public boolean hasPlayerJoined(UUID playerUUID) {
         return joinedPlayers.contains(playerUUID);
     }
@@ -175,9 +150,6 @@ public class SpawnDimensionSaveData extends SavedData {
         return !this.joinedPlayers.isEmpty();
     }
 
-    /**
-     * Gets the number of players that have joined.
-     */
     public int getJoinedPlayersCount() {
         return joinedPlayers.size();
     }

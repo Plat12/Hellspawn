@@ -4,9 +4,11 @@
   "package": "net.plat12.hellspawn.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "PlayerListMixin"
   ],
   "client": [
-    "CreateWorldScreenMixin"
+    "CreateWorldScreenMixin",
+    "CreateWorldScreenMixin$WorldTabMixin"
   ],
   "injectors": {
     "defaultRequire": 1

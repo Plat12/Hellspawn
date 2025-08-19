@@ -8,7 +8,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
@@ -30,7 +29,8 @@ public class ModUtils {
     public static final List<ResourceKey<Level>> ORDERED_VANILLA_DIMENSIONS = List.of(Level.OVERWORLD, Level.NETHER, Level.END);
     public static final String DIMENSION_PREFIX = "dimension";
     public static final String DESCRIPTION_PREFIX = "description";
-    public static final String FULL_DESCRIPTION_PREFIX = Hellspawn.MOD_ID + "." + DIMENSION_PREFIX + "." + DESCRIPTION_PREFIX;
+    public static final String FULL_DESCRIPTION_PREFIX =
+            Hellspawn.MOD_ID + "." + DIMENSION_PREFIX + "." + DESCRIPTION_PREFIX;
     public static ResourceKey<Level> selectedDimension = null;
 
     public static List<ResourceKey<Level>> getAllDimensions(WorldCreationUiState uiState) {
@@ -45,8 +45,7 @@ public class ModUtils {
             for (Map.Entry<ResourceKey<LevelStem>, LevelStem> entry : settings.datapackDimensions().entrySet()) {
                 result.add(dimensionLocationToResourceKey(entry.getKey().location()));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("Error loading dimensions");
             e.printStackTrace();
         }
@@ -70,7 +69,7 @@ public class ModUtils {
 
 
     public static ResourceKey<Level> dimensionLocationToResourceKey(ResourceLocation location) {
-        return  ResourceKey.create(Registries.DIMENSION, location);
+        return ResourceKey.create(Registries.DIMENSION, location);
     }
 
     public static Component getDimensionName(ResourceKey<Level> dimension) {
@@ -110,6 +109,7 @@ public class ModUtils {
         }
         data.joinWorld(player);
     }
+
     private static @NotNull BlockPos getValidSpawnPosition(ServerLevel level) {
         int x = 0;
         int z = 0;
@@ -157,7 +157,6 @@ public class ModUtils {
     }
 
 
-
     private static BlockPos findValidSpawnPositionInChunk(LevelChunk spawnChunk, RandomSource random, Level level) {
         List<BlockPos> validPositions = new ArrayList<>();
         List<BlockPos> skylitPositions = new ArrayList<>();
@@ -170,7 +169,8 @@ public class ModUtils {
                     if (y <= spawnChunk.getMinBuildHeight()) {
                         continue; // Skip if we can't check below
                     }
-                    BlockPos pos = new BlockPos(spawnChunk.getPos().getMinBlockX() + x, y, spawnChunk.getPos().getMinBlockZ() + z);
+                    BlockPos pos = new BlockPos(
+                            spawnChunk.getPos().getMinBlockX() + x, y, spawnChunk.getPos().getMinBlockZ() + z);
                     BlockPos above = pos.above();
                     BlockPos below = pos.below();
 
@@ -178,7 +178,6 @@ public class ModUtils {
                     BlockState currentState = spawnChunk.getBlockState(pos);
                     BlockState aboveState = spawnChunk.getBlockState(above);
                     BlockState belowState = spawnChunk.getBlockState(below);
-
 
 
                     if (!currentState.getCollisionShape(spawnChunk, pos).isEmpty()
